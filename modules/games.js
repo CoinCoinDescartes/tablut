@@ -65,6 +65,9 @@ export class Game {
   }
 
   getSquare(x, y) {
+    if (x > 8 || x < 0 || y > 8 || y < 0) {
+      return;
+    }
     return this.board[x][y];
   }
 
@@ -78,6 +81,35 @@ export class Game {
 
   getSameLine(x) {
     return this.board[x];
+  }
+
+  getSquareAround(token) {
+    const x = token.x;
+    const y = token.y;
+
+    const squareAround = [];
+    const squareAroundLvl2 = [];
+
+    const xPlus1 = x + 1;
+    const xPlus2 = x + 2;
+    const xMoins1 = x - 1;
+    const xMoins2 = x - 2;
+    const yPlus1 = y + 1;
+    const yPlus2 = y + 2;
+    const yMoins1 = y - 1;
+    const yMoins2 = y - 2;
+
+    squareAround.push(this.getSquare(xPlus1, y));
+    squareAround.push(this.getSquare(xMoins1, y));
+    squareAround.push(this.getSquare(x, yPlus1));
+    squareAround.push(this.getSquare(x, yMoins1));
+
+    squareAroundLvl2.push(this.getSquare(xPlus2, y));
+    squareAroundLvl2.push(this.getSquare(xMoins2, y));
+    squareAroundLvl2.push(this.getSquare(x, yPlus2));
+    squareAroundLvl2.push(this.getSquare(x, yMoins2));
+
+    return { around: squareAround, lvl2: squareAroundLvl2 };
   }
 
   moveToken(token, finalPos) {
@@ -139,13 +171,17 @@ export class Game {
   gameMove(token, finalPos, player) {
     if (player === this.playerTurn) {
       this.moveToken(token, finalPos);
-      this.captureToken();
+      this.captureToken(token);
 
       this.changePlayer();
     }
   }
 
-  captureToken() {
-    
+  captureToken(token) {
+    const sq = this.getSquareAround(token);
+    const t = sq.around
+      .filter(elem => elem.content !== null)
+      .filter(elem => elem.content.color !== token.color);
+    console.log(t);
   }
 }
