@@ -22,7 +22,7 @@ function drag(ev) {
 
     parentDragStart = { parent: ev.target.parentElement, x: x, y: y };
 
-    const validPos = computeValid(x, y);
+    const validPos = getValidPosition(x, y);
     ev.dataTransfer.setData("text", ev.target.id);
 
     console.log(validPos);
@@ -34,21 +34,20 @@ function drag(ev) {
         elem.addEventListener("dragleave", dragleave);
     })
 
-    function computeValid(x, y) {
+    function getValidPosition(x, y) {
 
         const validPos = [];
 
         const listSameLine = getSameLine(y);
         const listSameCol = getSameColumn(x);
 
-        const beforeLine = getBeforeLineToken(listSameLine)
-        const afterLine = getAfterLineToken(listSameLine);
-        const beforeCol = getBeforeColToken(listSameCol)
-        const afterCol = getAfterColToken(listSameCol)
+        const beforeLine = getBeforeToken(listSameLine, x)
+        const afterLine = getAfterToken(listSameLine, x);
+        const beforeCol = getBeforeToken(listSameCol, y)
+        const afterCol = getAfterToken(listSameCol, y)
 
         validPos.push(...beforeLine, ...afterLine, ...beforeCol, ...afterCol);
-
-        // console.log(validPos);
+        // validPos.filter(elem => !elem.classList.contains("throne"))
 
         return validPos;
 
@@ -58,51 +57,26 @@ function drag(ev) {
         function getSameColumn(x) {
             return [...document.getElementsByClassName('col' + x)];
         }
-        function getBeforeLineToken(array) {
+        function getBeforeToken(array, value) {
             let before = [];
-            for (let index = x - 1; index >= 0; index--) {
+            for (let index = value - 1; index >= 0; index--) {
                 const element = array[index];
-                if (element.dataset.hastoken === "true") {
+                if (element.dataset.hastoken === "true" || element.dataset.throne === "true") {
                     break;
                 }
                 before.push(element);
             }
             return before;
         }
-        function getAfterLineToken(array) {
+        function getAfterToken(array, value) {
             let after = [];
-            for (let index = x + 1; index < TAB_SIZE; index++) {
+            for (let index = value + 1; index < TAB_SIZE; index++) {
                 const element = array[index];
-                if (element.dataset.hastoken === "true") {
+                if (element.dataset.hastoken === "true" || element.dataset.throne === "true") {
                     break;
                 }
                 after.push(element);
             }
-            return after;
-        }
-        function getBeforeColToken(array) {
-            let before = [];
-            for (let index = y - 1; index >= 0; index--) {
-                const element = array[index];
-                console.log(element);
-
-                if (element.dataset.hastoken === "true") {
-                    break;
-                }
-                before.push(element);
-            }
-            return before;
-        }
-        function getAfterColToken(array) {
-            let after = [];
-            for (let index = y + 1; index < TAB_SIZE; index++) {
-                const element = array[index];
-                if (element.dataset.hastoken === "true") {
-                    break;
-                }
-                after.push(element);
-            }
-
             return after;
         }
     }
@@ -120,16 +94,12 @@ function removeValidMoveClass() {
 }
 
 function drop(ev) {
-    console.log(ev);
-
     ev.preventDefault();
-    parentDragStart.parent.setAttribute('data-hastoken', "false");
     removeValidMoveClass();
+    parentDragStart.parent.setAttribute('data-hastoken', "false");
     const data = ev.dataTransfer.getData("text");
     ev.target.appendChild(document.getElementById(data));
     ev.target.setAttribute('data-hastoken', "true");
-
-
 }
 
 function init() {
