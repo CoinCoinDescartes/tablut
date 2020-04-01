@@ -1,171 +1,201 @@
 <!DOCTYPE html>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <html>
-<meta charset="UTF-8">
-
-<head>
+  <head>
     <style>
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(9, 1fr);
-            background-color: #2196F3;
-            padding: 10px;
-            margin: auto;
-            width: 450px;
-            height: 450px;
-        }
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(9, 1fr);
+        background-color: #2196f3;
+        padding: 10px;
+        margin: auto;
+        width: 450px;
+        height: 450px;
+      }
 
-        .grid-item {
-            display: grid;
-            justify-items: center;
-            align-items: center;
-            background-color: rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(0, 0, 0, 0.8);
-            width: 45px;
-            height: 45px;
-            text-align: center;
-        }
+      .grid-item {
+        display: grid;
+        justify-items: center;
+        align-items: center;
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.8);
+        width: 45px;
+        height: 45px;
+        text-align: center;
+      }
 
-        .grid-item.validMove {
-            background-color: aqua;
-        }
+      .grid-item.validMove {
+        background-color: aqua;
+      }
 
-        .grid-item.validMove.current {
-            background-color: red;
-        }
+      .grid-item.validMove.current {
+        background-color: red;
+      }
 
-        .grid-item.throne {
-            background-color: cadetblue;
-        }
+      .grid-item.throne {
+        background-color: cadetblue;
+      }
 
-        body {
-            background-color: black;
-            color: white;
-        }
+      body {
+        background-color: black;
+        color: white;
+      }
     </style>
+  </head>
 
-</head>
-
-<body>
-
+  <body>
     <h1>TABLUT</h1>
 
-    <p>A Grid Layout must have a parent element with the <em>display</em> property set to <em>grid</em> or
-        <em>inline-grid</em>.</p>
+    <p>
+      A Grid Layout must have a parent element with the
+      <em>display</em> property set to <em>grid</em> or <em>inline-grid</em>.
+    </p>
 
-    <p>Direct child element(s) of the grid container automatically becomes grid items.</p>
+    <p>
+      Direct child element(s) of the grid container automatically becomes grid
+      items.
+    </p>
 
     <div class="grid-container">
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item">
-            <img class="pion black" src="black.png" width="40" height="40">
-        </div>
-        <div class="grid-item">
-            <img class="pion black" src="black.png" width="40" height="40">
-        </div>
-        <div class="grid-item">
-            <img class="pion black" src="black.png" width="40" height="40">
-        </div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item">
-            <img class="pion black" src="black.png" width="40" height="40">
-        </div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item">
-            <img class="pion white" src="white.png" width="40" height="40">
-        </div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"><img class="pion black" src="black.png" width="40" height="40"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item">
-            <img class="pion white" src="white.png" width="40" height="40">
-        </div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"><img class="pion black" src="black.png" width="40" height="40"></div>
-        <div class="grid-item"><img class="pion black" src="black.png" width="40" height="40"></div>
-        <div class="grid-item"><img class="pion black" src="black.png" width="40" height="40"></div>
-        <div class="grid-item">
-            <img class="pion white" src="white.png" width="40" height="40">
-        </div>
-        <div class="grid-item">
-            <img class="pion white" src="white.png" width="40" height="40">
-        </div>
-        <div class="grid-item throne" data-throne="true">
-            <img class="pion white king" src="king.png" id="king" width="40" height="40">
-        </div>
-        <div class="grid-item">
-            <img class="pion white" src="white.png" width="40" height="40">
-        </div>
-        <div class="grid-item">
-            <img class="pion white" src="white.png" width="40" height="40">
-        </div>
-        <div class="grid-item"><img class="pion black" src="black.png" width="40" height="40"></div>
-        <div class="grid-item"><img class="pion black" src="black.png" width="40" height="40"></div>
-        <div class="grid-item"><img class="pion black" src="black.png" width="40" height="40"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item">
-            <img class="pion white" src="white.png" width="40" height="40">
-        </div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"><img class="pion black" src="black.png" width="40" height="40"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item">
-            <img class="pion white" src="white.png" width="40" height="40">
-        </div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"><img class="pion black" src="black.png" width="40" height="40"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"><img class="pion black" src="black.png" width="40" height="40"></div>
-        <div class="grid-item"><img class="pion black" src="black.png" width="40" height="40"></div>
-        <div class="grid-item"><img class="pion black" src="black.png" width="40" height="40"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item">
+        <img class="pion black" src="black.png" width="40" height="40" />
+      </div>
+      <div class="grid-item">
+        <img class="pion black" src="black.png" width="40" height="40" />
+      </div>
+      <div class="grid-item">
+        <img class="pion black" src="black.png" width="40" height="40" />
+      </div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item">
+        <img class="pion black" src="black.png" width="40" height="40" />
+      </div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item">
+        <img class="pion white" src="white.png" width="40" height="40" />
+      </div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item">
+        <img class="pion black" src="black.png" width="40" height="40" />
+      </div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item">
+        <img class="pion white" src="white.png" width="40" height="40" />
+      </div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item">
+        <img class="pion black" src="black.png" width="40" height="40" />
+      </div>
+      <div class="grid-item">
+        <img class="pion black" src="black.png" width="40" height="40" />
+      </div>
+      <div class="grid-item">
+        <img class="pion black" src="black.png" width="40" height="40" />
+      </div>
+      <div class="grid-item">
+        <img class="pion white" src="white.png" width="40" height="40" />
+      </div>
+      <div class="grid-item">
+        <img class="pion white" src="white.png" width="40" height="40" />
+      </div>
+      <div class="grid-item throne" data-throne="true">
+        <img
+          class="pion white king"
+          src="king.png"
+          id="king"
+          width="40"
+          height="40"
+        />
+      </div>
+      <div class="grid-item">
+        <img class="pion white" src="white.png" width="40" height="40" />
+      </div>
+      <div class="grid-item">
+        <img class="pion white" src="white.png" width="40" height="40" />
+      </div>
+      <div class="grid-item">
+        <img class="pion black" src="black.png" width="40" height="40" />
+      </div>
+      <div class="grid-item">
+        <img class="pion black" src="black.png" width="40" height="40" />
+      </div>
+      <div class="grid-item">
+        <img class="pion black" src="black.png" width="40" height="40" />
+      </div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item">
+        <img class="pion white" src="white.png" width="40" height="40" />
+      </div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item">
+        <img class="pion black" src="black.png" width="40" height="40" />
+      </div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item">
+        <img class="pion white" src="white.png" width="40" height="40" />
+      </div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item">
+        <img class="pion black" src="black.png" width="40" height="40" />
+      </div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item">
+        <img class="pion black" src="black.png" width="40" height="40" />
+      </div>
+      <div class="grid-item">
+        <img class="pion black" src="black.png" width="40" height="40" />
+      </div>
+      <div class="grid-item">
+        <img class="pion black" src="black.png" width="40" height="40" />
+      </div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
+      <div class="grid-item"></div>
     </div>
-</body>
-<script src="myscripts.js">
-</script>
-
+  </body>
+  <script src="myscripts.js"></script>
+  <script type="module" src="main.js"></script>
 </html>
