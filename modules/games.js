@@ -71,6 +71,19 @@ export class Game {
     return this.board[x][y];
   }
 
+  getNorthSquare(x, y) {
+    return this.getSquare(x - 1, y);
+  }
+  getSouthSquare(x, y) {
+    return this.getSquare(x + 1, y);
+  }
+  getEastSquare(x, y) {
+    return this.getSquare(x, y + 1);
+  }
+  getWestSquare(x, y) {
+    return this.getSquare(x, y - 1);
+  }
+
   getSameCol(y) {
     const tab = [];
     this.board.forEach(elem => {
@@ -87,29 +100,19 @@ export class Game {
     const x = token.x;
     const y = token.y;
 
-    const squareAround = [];
-    const squareAroundLvl2 = [];
+    const squareAround = {
+      north: undefined,
+      south: undefined,
+      east: undefined,
+      west: undefined
+    };
 
-    const xPlus1 = x + 1;
-    const xPlus2 = x + 2;
-    const xMoins1 = x - 1;
-    const xMoins2 = x - 2;
-    const yPlus1 = y + 1;
-    const yPlus2 = y + 2;
-    const yMoins1 = y - 1;
-    const yMoins2 = y - 2;
+    squareAround.north = this.getNorthSquare(x, y);
+    squareAround.south = this.getSouthSquare(x, y);
+    squareAround.east = this.getEastSquare(x, y);
+    squareAround.west = this.getWestSquare(x, y);
 
-    squareAround.push(this.getSquare(xPlus1, y));
-    squareAround.push(this.getSquare(xMoins1, y));
-    squareAround.push(this.getSquare(x, yPlus1));
-    squareAround.push(this.getSquare(x, yMoins1));
-
-    squareAroundLvl2.push(this.getSquare(xPlus2, y));
-    squareAroundLvl2.push(this.getSquare(xMoins2, y));
-    squareAroundLvl2.push(this.getSquare(x, yPlus2));
-    squareAroundLvl2.push(this.getSquare(x, yMoins2));
-
-    return { around: squareAround, lvl2: squareAroundLvl2 };
+    return squareAround;
   }
 
   moveToken(token, finalPos) {
@@ -119,7 +122,7 @@ export class Game {
       sqStart.setContent(null);
       sqEnd.setContent(token);
       token.setPos(finalPos.x, finalPos.y);
-
+      
       // this.changePlayer();
     }
   }
@@ -171,17 +174,50 @@ export class Game {
   gameMove(token, finalPos, player) {
     if (player === this.playerTurn) {
       this.moveToken(token, finalPos);
-      this.captureToken(token);
+      this.listCapturedTokens(token);
 
       this.changePlayer();
     }
   }
 
-  captureToken(token) {
-    const sq = this.getSquareAround(token);
-    const t = sq.around
-      .filter(elem => elem.content !== null)
-      .filter(elem => elem.content.color !== token.color);
-    console.log(t);
+  listCapturedTokens(token) {
+    const capturedTokens = [];
+    const aroundSquares = this.getSquareAround(token);
+    console.log(aroundSquares);
+
+    for (const aroundSquare in aroundSquares) {
+      const tok = aroundSquares[aroundSquare].content;
+      console.log(tok);
+      
+      if (tok) {
+        let otherToken;
+        if (tok.x === token.x) {
+          // same line
+          if (tok.x - token.x < 0) {
+            // tok is after token, we must get the WEST square of tok
+            otherToken = this.getWestSquare(tok.x, tok.y).content;
+          } else {
+            // tok is before token, we must get the EAST square of tok
+            otherToken = this.getEastSquare(tok.x, tok.y).content;
+          }
+        }
+        if (tok.y === token.y) {
+          //same col
+          if (tok.y - token.y < 0) {
+            // tok is after token, we must get the SOUTH square of tok
+            otherToken = this.getSouthSquare(tok.x, tok.y).content;
+          } else {
+            // tok is before token, we must get the NORTH square of tok
+            otherToken = this.getNorthSquare(tok.x, tok.y).content;
+          }
+        }
+        
+        if (otherToken && otherToken.color === token.color) {
+          // tok is between 2 token of the same player, it is captured;
+          capturedTokens.push(tok);
+        }
+      }
+    }
+    return capturedTokens;
   }
 }
