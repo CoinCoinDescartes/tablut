@@ -2,57 +2,69 @@ import { Square } from "./square.js";
 import { Token } from "./token.js";
 
 export class Board {
-  TAB_SIZE = 9;
-
-  constructor() {
+  constructor(tabSize) {
     const initTokenPos = () => {
-      const tokenArr = [];
-      tokenArr.push(new Token("black", 0, 3, "black0"));
-      tokenArr.push(new Token("black", 0, 4, "black1"));
-      tokenArr.push(new Token("black", 0, 5, "black2"));
-      tokenArr.push(new Token("black", 1, 4, "black3"));
-      tokenArr.push(new Token("black", 3, 0, "black4"));
-      tokenArr.push(new Token("black", 3, 8, "black5"));
-      tokenArr.push(new Token("black", 4, 0, "black6"));
-      tokenArr.push(new Token("black", 4, 1, "black7"));
-      tokenArr.push(new Token("black", 4, 7, "black8"));
-      tokenArr.push(new Token("black", 4, 8, "black9"));
-      tokenArr.push(new Token("black", 5, 0, "black10"));
-      tokenArr.push(new Token("black", 5, 8, "black11"));
-      tokenArr.push(new Token("black", 7, 4, "black12"));
-      tokenArr.push(new Token("black", 8, 3, "black13"));
-      tokenArr.push(new Token("black", 8, 4, "black14"));
-      tokenArr.push(new Token("black", 8, 5, "black15"));
+      const allToken = [];
+      const blackToken = [];
+      const whiteToken = [];
 
-      tokenArr.push(new Token("white", 2, 4, "white0"));
-      tokenArr.push(new Token("white", 3, 4, "white1"));
-      tokenArr.push(new Token("white", 4, 2, "white2"));
-      tokenArr.push(new Token("white", 4, 3, "white3"));
-      tokenArr.push(new Token("white", 4, 4, "white4", true));
-      tokenArr.push(new Token("white", 4, 5, "white5"));
-      tokenArr.push(new Token("white", 4, 6, "white6"));
-      tokenArr.push(new Token("white", 5, 4, "white7"));
-      tokenArr.push(new Token("white", 6, 4, "white8"));
+      blackToken.push(new Token("black", 0, 3, "black0"));
+      blackToken.push(new Token("black", 0, 4, "black1"));
+      blackToken.push(new Token("black", 0, 5, "black2"));
+      blackToken.push(new Token("black", 1, 4, "black3"));
+      blackToken.push(new Token("black", 3, 0, "black4"));
+      blackToken.push(new Token("black", 3, 8, "black5"));
+      blackToken.push(new Token("black", 4, 0, "black6"));
+      blackToken.push(new Token("black", 4, 1, "black7"));
+      blackToken.push(new Token("black", 4, 7, "black8"));
+      blackToken.push(new Token("black", 4, 8, "black9"));
+      blackToken.push(new Token("black", 5, 0, "black10"));
+      blackToken.push(new Token("black", 5, 8, "black11"));
+      blackToken.push(new Token("black", 7, 4, "black12"));
+      blackToken.push(new Token("black", 8, 3, "black13"));
+      blackToken.push(new Token("black", 8, 4, "black14"));
+      blackToken.push(new Token("black", 8, 5, "black15"));
 
-      for (const tok of tokenArr) {
+      whiteToken.push(new Token("white", 2, 4, "white0"));
+      whiteToken.push(new Token("white", 3, 4, "white1"));
+      whiteToken.push(new Token("white", 4, 2, "white2"));
+      whiteToken.push(new Token("white", 4, 3, "white3"));
+      whiteToken.push(new Token("white", 4, 4, "white4", true));
+      whiteToken.push(new Token("white", 4, 5, "white5"));
+      whiteToken.push(new Token("white", 4, 6, "white6"));
+      whiteToken.push(new Token("white", 5, 4, "white7"));
+      whiteToken.push(new Token("white", 6, 4, "white8"));
+
+      allToken = [...blackToken, ...whiteToken];
+
+      for (const tok of allToken) {
         const sq = this.getSquare(tok.x, tok.y);
         sq.setContent(tok);
       }
       const sq = this.getSquare(4, 4);
       sq.setIsThrone(true);
-    };
 
+      return {
+        allToken: allToken,
+        whiteToken: whiteToken,
+        blackToken: blackToken
+      };
+    };
+    this.tabSize = tabSize;
     this.board = [];
-    for (let x = 0; x < TAB_SIZE; x++) {
+    for (let x = 0; x < tabSize; x++) {
       const tab = [];
-      for (let y = 0; y < TAB_SIZE; y++) {
+      for (let y = 0; y < tabSize; y++) {
         const sq = new Square(x, y);
         tab.push(sq);
       }
       this.board.push(tab);
     }
 
-    initTokenPos();
+    const listToken = initTokenPos();
+    this.allToken = listToken.allToken;
+    this.blackToken = listToken.blackToken;
+    this.whiteToken = listToken.whiteToken;
   }
 
   getSquare(x, y) {
@@ -117,5 +129,14 @@ export class Board {
   deleteToken(token) {
     const sqStart = this.getSquare(token.x, token.y);
     sqStart.setContent(null);
+  }
+
+  getEdge() {
+    const topLine = this.board[0];
+    const bottomLine = this.board[tabSize - 1];
+    const firstCol = getSameCol(0);
+    const lastCol = getSameCol(tabSize - 1);
+
+    return [...topLine, ...bottomLine, ...firstCol, ...lastCol];
   }
 }

@@ -1,12 +1,16 @@
 import { Board } from "./board.js";
+import { Player } from "./player.js";
 
 export class Game {
-  // static TAB_SIZE = 9;
   TAB_SIZE = 9;
 
   constructor() {
+    this.board = new Board(TAB_SIZE);
+    this.whitePlayer = new Player("white", this.board.whiteToken.length);
+    this.blackPlayer = new Player("black", this.board.blackToken.length);
     this.playerTurn = "black";
-    this.board = new Board();
+    this.winPlayer = null;
+    this.gameState = "running";
   }
 
   changePlayer() {
@@ -14,17 +18,6 @@ export class Game {
       this.playerTurn = "white";
     } else if (this.playerTurn === "white") {
       this.playerTurn = "black";
-    }
-  }
-
-  /* 
-    @deprecated ?
-  */
-  moveToken(token, finalPos) {
-    if (this.playerTurn === token.color) {
-      this.board.moveToken(token, finalPos);
-
-      // this.changePlayer();
     }
   }
 
@@ -71,11 +64,50 @@ export class Game {
     if (player === this.playerTurn) {
       this.moveToken(token, finalPos);
       const capturedToken = this.listCapturedTokens(token);
-      
+      capturedToken.forEach(tok => {
+        if (tok.isKing) {
+          console.log("white player loose");
+          this.gameState = "end";
+          this.winPlayer = this.blackPlayer;
+        }
+        this.board.deleteToken(tok);
+      });
 
+      this.computeGameEnd();
 
       this.changePlayer();
     }
+  }
+
+  computerGameEnd() {
+    const edges = this.board.getEdge();
+
+    // King reached an edge : White Win
+    const edgesWithKing = edges
+      .filter(sq => sq.content !== null)
+      .filter(sq => sq.content.isKing);
+    if (edgesWithKing.length === 1) {
+      this.gameState = "end";
+      this.winPlayer = this.whitePlayer;
+    }
+
+    // black doesn't have any token left: white win
+    if (this.blackPlayer.numberOfToken === 0) {
+      this.gameState = "end";
+      this.winPlayer = this.whitePlayer;
+    }
+
+    // white doesn't have any token left: black win
+    if (this.whitePlayer.numberOfToken === 0) {
+      this.gameState = "end";
+      this.winPlayer = this.blackPlayer;
+    }
+
+    // if white doesn't have any valid move: black win
+    // filter tout ceux avec des position de deplacement valide
+    this.board.whiteToken.forEach(tok => {
+      this.getValidPosToMove(tok).length === 0
+    });
   }
 
   listCapturedTokens(token) {
@@ -93,25 +125,28 @@ export class Game {
           // same line
           if (tok.x - token.x < 0) {
             // tok is after token, we must get the WEST square of tok
-            otherToken = this.board.getWestSquare(tok.x, tok.y).content;
+            otherToken = this.board.getWestSquare(tok.x, tok.y);
           } else {
             // tok is before token, we must get the EAST square of tok
-            otherToken = this.board.getEastSquare(tok.x, tok.y).content;
+            otherToken = this.board.getEastSquare(tok.x, tok.y);
           }
         }
         if (tok.y === token.y) {
           //same col
           if (tok.y - token.y < 0) {
             // tok is after token, we must get the SOUTH square of tok
-            otherToken = this.board.getSouthSquare(tok.x, tok.y).content;
+            otherToken = this.board.getSouthSquare(tok.x, tok.y);
           } else {
             // tok is before token, we must get the NORTH square of tok
-            otherToken = this.board.getNorthSquare(tok.x, tok.y).content;
+            otherToken = this.board.getNorthSquare(tok.x, tok.y);
           }
         }
 
-        if (otherToken && otherToken.color === token.color) {
-          // tok is between 2 token of the same player, it is captured;
+        if (
+          otherToken &&
+          (otherToken.content.color === token.color || otherToken.isThrone)
+        ) {
+          // tok is between 2 tokens of the same player or 1 token and throne it is captured;
           capturedTokens.push(tok);
         }
       }
