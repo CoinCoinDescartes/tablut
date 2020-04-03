@@ -80,16 +80,16 @@ export class Board {
   }
 
   getNorthSquare(x, y) {
-    return this.getSquare(x, y - 1);
+    return this.getSquare(x - 1, y);
   }
   getSouthSquare(x, y) {
-    return this.getSquare(x, y + 1);
-  }
-  getEastSquare(x, y) {
     return this.getSquare(x + 1, y);
   }
+  getEastSquare(x, y) {
+    return this.getSquare(x, y + 1);
+  }
   getWestSquare(x, y) {
-    return this.getSquare(x - 1, y - 1);
+    return this.getSquare(x, y - 1);
   }
 
   getSameCol(y) {

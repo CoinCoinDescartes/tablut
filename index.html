@@ -22,6 +22,8 @@
         width: 45px;
         height: 45px;
         text-align: center;
+
+        color: blue;
       }
 
       .grid-item.validMove {
@@ -48,7 +50,7 @@
       .pion.white {
         background-image: url("./white.png");
       }
-      
+
       .pion.white.king {
         background-image: url("./king.png");
       }
@@ -63,18 +65,11 @@
   <body>
     <h1>TABLUT</h1>
 
-    <p>
-      A Grid Layout must have a parent element with the
-      <em>display</em> property set to <em>grid</em> or <em>inline-grid</em>.
-    </p>
+    <p id="winner"></p>
 
-    <p>
-     It's <b id="player-turn"></b> turn
-    </p>
+    <p id="player-turn"></p>
 
-    <div id="game-zone">
-
-    </div>
+    <div id="game-zone"></div>
     <!-- <div class="grid-container">
       <div class="grid-item"></div>
       <div class="grid-item"></div>

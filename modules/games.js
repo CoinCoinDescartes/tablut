@@ -13,6 +13,9 @@ export class Game {
   }
 
   changePlayer() {
+    if (this.gameState === "end") {
+      this.playerTurn = null;
+    }
     if (this.playerTurn === "black") {
       this.playerTurn = "white";
     } else if (this.playerTurn === "white") {
@@ -32,7 +35,7 @@ export class Game {
       let before = [];
       for (let index = value - 1; index >= 0; index--) {
         const element = array[index];
-        if (element.content !== null || element.isThrone === "true") {
+        if (element.content !== null || element.isThrone === true) {
           break;
         }
         before.push(element);
@@ -44,7 +47,7 @@ export class Game {
       let after = [];
       for (let index = value + 1; index < this.TAB_SIZE; index++) {
         const element = array[index];
-        if (element.content !== null || element.isThrone === "true") {
+        if (element.content !== null || element.isThrone === true) {
           break;
         }
         after.push(element);
@@ -137,39 +140,43 @@ export class Game {
     console.log(aroundSquares);
 
     for (const aroundSquare in aroundSquares) {
-      const tok = aroundSquares[aroundSquare].content;
-      console.log(tok);
+      const sq = aroundSquares[aroundSquare];
+      if (sq) {
+        const tok = sq.content;
+        console.log(tok);
 
-      if (tok) {
-        let otherToken;
-        if (tok.x === token.x) {
-          // same line
-          if (tok.y - token.y > 0) {
-            // tok is after token, we must get the WEST square of tok
-            otherToken = this.board.getWestSquare(tok.x, tok.y);
-          } else {
-            // tok is before token, we must get the EAST square of tok
-            otherToken = this.board.getEastSquare(tok.x, tok.y);
+        if (tok) {
+          let otherToken;
+          if (tok.x === token.x) {
+            // same line
+            if (tok.y - token.y > 0) {
+              // tok is after token, we must get the EAST square of tok
+              otherToken = this.board.getEastSquare(tok.x, tok.y);
+            } else {
+              // tok is before token, we must get the WEST square of tok
+              otherToken = this.board.getWestSquare(tok.x, tok.y);
+            }
+          } else if (tok.y === token.y) {
+            //same col
+            if (tok.x - token.x > 0) {
+              // tok is after token, we must get the SOUTH square of tok
+              otherToken = this.board.getSouthSquare(tok.x, tok.y);
+            } else {
+              // tok is before token, we must get the NORTH square of tok
+              otherToken = this.board.getNorthSquare(tok.x, tok.y);
+            }
           }
-        }
-        if (tok.y === token.y) {
-          //same col
-          if (tok.x - token.x > 0) {
-            // tok is after token, we must get the SOUTH square of tok
-            otherToken = this.board.getSouthSquare(tok.x, tok.y);
-          } else {
-            // tok is before token, we must get the NORTH square of tok
-            otherToken = this.board.getNorthSquare(tok.x, tok.y);
-          }
-        }
 
-        if (
-          otherToken &&
-          ((otherToken.content && otherToken.content.color === token.color) ||
-            (otherToken.isThrone && otherToken.content === null))
-        ) {
-          // tok is between 2 tokens of the same player or 1 token and throne it is captured;
-          capturedTokens.push(tok);
+          if (
+            otherToken &&
+            ((otherToken.content &&
+              otherToken.content.color === token.color &&
+              tok.color !== token.color) ||
+              (otherToken.isThrone && otherToken.content === null))
+          ) {
+            // tok is between 2 tokens of the same player or 1 token and throne it is captured;
+            capturedTokens.push(tok);
+          }
         }
       }
     }

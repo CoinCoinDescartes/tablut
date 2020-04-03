@@ -21,6 +21,7 @@ function generateViewFromGame(game) {
         const newGridItem = document.createElement("div");
         newGridItem.classList.add("grid-item");
         newGridItem.setAttribute("id", index);
+        // newGridItem.innerHTML = "x " + col.x + " y " + col.y;
 
         if (col.isThrone) {
           newGridItem.classList.add("throne");
@@ -28,7 +29,7 @@ function generateViewFromGame(game) {
 
         if (col.content) {
           const content = col.content;
-          const token = createTokenView(content);
+          const token = createTokenView(content, game.playerTurn);
           newGridItem.appendChild(token);
         }
 
@@ -38,19 +39,22 @@ function generateViewFromGame(game) {
     }
 
     const gameZone = document.getElementById("game-zone");
-    //   clearContent(gameZone);
-    /* gameZone.insertBefore(
-      gridContainer,
-      document.getElementsByClassName("grid-container")[0]
-    ); */
     gameZone.appendChild(gridContainer);
   }
   function updateInfo(game) {
-    document.getElementById("player-turn").innerHTML = game.playerTurn;
+    document.getElementById(
+      "player-turn"
+    ).innerHTML = `It's ${game.playerTurn} player turn`;
+    if (game.gameState === "end") {
+      document.getElementById(
+        "winner"
+      ).innerHTML = `Winner ${game.winPlayer.name}`;
+      document.getElementById("player-turn").innerHTML = "";
+    }
   }
 
-  generateGrid(game);
   updateInfo(game);
+  generateGrid(game);
 }
 
 function clearContent(element) {
@@ -59,19 +63,23 @@ function clearContent(element) {
   }
 }
 
-function createTokenView(token) {
+function createTokenView(token, playerTurn) {
   const color = token.color;
   const isKing = token.isKing;
   const id = token.id;
 
   const tokenView = document.createElement("div");
+  // tokenView.innerHTML = id;
   tokenView.classList.add("pion");
   tokenView.classList.add(color);
   tokenView.setAttribute("id", id);
-  tokenView.setAttribute("draggable", "true");
-  tokenView.addEventListener("dragstart", drag);
   if (isKing) {
     tokenView.classList.add("king");
+  }
+
+  if (playerTurn === color) {
+    tokenView.setAttribute("draggable", "true");
+    tokenView.addEventListener("dragstart", drag);
   }
 
   return tokenView;
@@ -97,7 +105,7 @@ function drag(ev) {
 
   //recherche des position valide
   const validPos = game.getValidPosToMove(tokenData);
-  console.log(validPos);
+  // console.log(validPos);
 
   // ajout des class sur les cases possible de destination
   validPos.forEach(elem => {
@@ -149,11 +157,13 @@ function drag(ev) {
       game.getPlayerByName(game.playerTurn)
     );
 
+    const gameZone = document.getElementById("game-zone");
+    clearContent(gameZone);
     generateViewFromGame(newGameState);
 
     console.log(game.board.board);
 
-    ev.target.appendChild(document.getElementById(tokenId));
+    // ev.target.appendChild(document.getElementById(tokenId));
   }
   function removeValidMoveClass() {
     const elements = [
