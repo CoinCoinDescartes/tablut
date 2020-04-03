@@ -1,23 +1,180 @@
 import { Game } from "./modules/games.js";
 
-const game = new Game();
-console.log(game.board);
-const tok = game.board.getSquare(1, 4).content;
-const tok2 = game.board.getSquare(2, 4).content;
-// const tok = game.board[1][4].content;
-// const tok2 = game.board[2][4].content;
-// game.moveToken(tok, { x: 1, y: 3 });
+let game;
+let currentDraged = null;
+init();
 
-// console.log(game.gameState);
-// const pos = game.getValidPosToMove(tok);
-// console.log(pos);
+function init() {
+  game = new Game();
+  console.log(game.board);
+  generateViewFromGame(game);
+}
 
-console.log(tok);
-console.log(tok2);
+function generateViewFromGame(game) {
+  function generateGrid(game) {
+    const gridContainer = document.createElement("div");
+    gridContainer.classList.add("grid-container");
 
-game.moveToken(tok, { x: 2, y: 5 });
-game.changePlayer();
-game.moveToken(tok2, { x: 1, y: 5 });
-console.log(game.board);
-const t = game.listCapturedTokens(tok);
-console.log(t);
+    let index = 0;
+    for (const line of game.board.board) {
+      for (const col of line) {
+        const newGridItem = document.createElement("div");
+        newGridItem.classList.add("grid-item");
+        newGridItem.setAttribute("id", index);
+
+        if (col.isThrone) {
+          newGridItem.classList.add("throne");
+        }
+
+        if (col.content) {
+          const content = col.content;
+          const token = createTokenView(content);
+          newGridItem.appendChild(token);
+        }
+
+        gridContainer.appendChild(newGridItem);
+        index++;
+      }
+    }
+
+    const gameZone = document.getElementById("game-zone");
+    //   clearContent(gameZone);
+    /* gameZone.insertBefore(
+      gridContainer,
+      document.getElementsByClassName("grid-container")[0]
+    ); */
+    gameZone.appendChild(gridContainer);
+  }
+  function updateInfo(game) {
+    document.getElementById("player-turn").innerHTML = game.playerTurn;
+  }
+
+  generateGrid(game);
+  updateInfo(game);
+}
+
+function clearContent(element) {
+  while (element.firstChild) {
+    element.removeChild(element.firstChild);
+  }
+}
+
+function createTokenView(token) {
+  const color = token.color;
+  const isKing = token.isKing;
+  const id = token.id;
+
+  const tokenView = document.createElement("div");
+  tokenView.classList.add("pion");
+  tokenView.classList.add(color);
+  tokenView.setAttribute("id", id);
+  tokenView.setAttribute("draggable", "true");
+  tokenView.addEventListener("dragstart", drag);
+  if (isKing) {
+    tokenView.classList.add("king");
+  }
+
+  return tokenView;
+}
+
+function getTokenDataFromId(id) {
+  return game.getTokenDataFromId(id);
+}
+
+function drag(ev) {
+  // recuperation des données du token
+  const tokenData = getTokenDataFromId(ev.target.id);
+
+  // clear des class
+  if (currentDraged !== ev.target) {
+    removeValidMoveClass();
+
+    currentDraged = ev.target;
+  }
+
+  // set des donne a tranferer durant le transfert
+  ev.dataTransfer.setData("text", ev.target.id);
+
+  //recherche des position valide
+  const validPos = game.getValidPosToMove(tokenData);
+  console.log(validPos);
+
+  // ajout des class sur les cases possible de destination
+  validPos.forEach(elem => {
+    const sq = getCaseFromSquare(elem);
+    sq.classList.add("validMove");
+    sq.addEventListener("drop", drop);
+    sq.addEventListener("dragover", dragover);
+    sq.addEventListener("dragleave", dragleave);
+  });
+
+  function getCaseFromSquare(square) {
+    const x = square.x;
+    const y = square.y;
+
+    const listCase = document.getElementsByClassName("grid-item");
+
+    return listCase[y + x * game.TAB_SIZE];
+  }
+
+  function getSquareFromCaseId(id_input) {
+    const id = parseInt(id_input, 10);
+
+    const x = Math.trunc(id / game.TAB_SIZE);
+    const y = id % game.TAB_SIZE;
+
+    return game.board.board[x][y];
+  }
+
+  function dragover(ev) {
+    ev.preventDefault();
+    ev.target.classList.add("current");
+  }
+
+  function dragleave(ev) {
+    ev.preventDefault();
+    ev.target.classList.remove("current");
+  }
+
+  function drop(ev) {
+    ev.preventDefault();
+    removeValidMoveClass();
+    const tokenId = ev.dataTransfer.getData("text");
+    const token = game.getTokenDataFromId(tokenId);
+    const caseId = ev.target.id;
+    const caseData = getSquareFromCaseId(caseId);
+    const newGameState = game.gameMove(
+      token,
+      { x: caseData.x, y: caseData.y },
+      game.getPlayerByName(game.playerTurn)
+    );
+
+    generateViewFromGame(newGameState);
+
+    console.log(game.board.board);
+
+    ev.target.appendChild(document.getElementById(tokenId));
+  }
+  function removeValidMoveClass() {
+    const elements = [
+      ...document.getElementsByClassName("grid-item validMove")
+    ];
+    elements.forEach(elem => {
+      elem.classList.remove("validMove");
+      elem.classList.remove("current");
+      elem.removeEventListener("drop", drop);
+      elem.removeEventListener("dragover", dragover);
+      elem.removeEventListener("dragleave", dragleave);
+    });
+  }
+
+  /* function updateViewFromGameState(newGame) {
+    game.whitePlayer = newGame.whitePlayer;
+    game.blackPlayer = newGame.blackPlayer;
+    game.playerTurn = newGame.playerTurn;
+    game.winPlayer = newGame.winPlayer;
+    game.gameState = newGame.gameState;
+
+    generateViewFromGame(newGame);
+  } */
+}

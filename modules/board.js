@@ -4,7 +4,7 @@ import { Token } from "./token.js";
 export class Board {
   constructor(tabSize) {
     const initTokenPos = () => {
-      const allToken = [];
+      let allToken = [];
       const blackToken = [];
       const whiteToken = [];
 
@@ -60,11 +60,16 @@ export class Board {
       }
       this.board.push(tab);
     }
+    this.board[4][4] = new Square(4, 4, true);
 
     const listToken = initTokenPos();
     this.allToken = listToken.allToken;
     this.blackToken = listToken.blackToken;
     this.whiteToken = listToken.whiteToken;
+  }
+
+  getTokenDataFromId(id) {
+    return this.allToken.filter(tok => tok.id === id)[0];
   }
 
   getSquare(x, y) {
@@ -75,16 +80,16 @@ export class Board {
   }
 
   getNorthSquare(x, y) {
-    return this.getSquare(x - 1, y);
+    return this.getSquare(x, y - 1);
   }
   getSouthSquare(x, y) {
-    return this.getSquare(x + 1, y);
-  }
-  getEastSquare(x, y) {
     return this.getSquare(x, y + 1);
   }
+  getEastSquare(x, y) {
+    return this.getSquare(x + 1, y);
+  }
   getWestSquare(x, y) {
-    return this.getSquare(x, y - 1);
+    return this.getSquare(x - 1, y - 1);
   }
 
   getSameCol(y) {
@@ -133,9 +138,9 @@ export class Board {
 
   getEdge() {
     const topLine = this.board[0];
-    const bottomLine = this.board[tabSize - 1];
-    const firstCol = getSameCol(0);
-    const lastCol = getSameCol(tabSize - 1);
+    const bottomLine = this.board[this.tabSize - 1];
+    const firstCol = this.getSameCol(0);
+    const lastCol = this.getSameCol(this.tabSize - 1);
 
     return [...topLine, ...bottomLine, ...firstCol, ...lastCol];
   }

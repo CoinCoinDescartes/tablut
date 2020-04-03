@@ -1,13 +1,13 @@
-function dragover(ev) {
+/* function dragover(ev) {
   ev.preventDefault();
   ev.target.classList.add("current");
 }
 function dragleave(ev) {
   ev.preventDefault();
   ev.target.classList.remove("current");
-}
+} */
 
-function drag(ev) {
+/* function drag(ev) {
   const parentData = ev.target.parentElement.dataset;
   const x_Input = parentData.x;
   const y_Input = parentData.y;
@@ -85,9 +85,9 @@ function drag(ev) {
       return after;
     }
   }
-}
+} */
 
-function removeValidMoveClass() {
+/* function removeValidMoveClass() {
   const elements = [...document.getElementsByClassName("grid-item validMove")];
   elements.forEach(elem => {
     elem.classList.remove("validMove");
@@ -160,4 +160,4 @@ function initToken() {
 const TAB_SIZE = 9;
 let parentDragStart = null;
 let currentDraged = null;
-init();
+init(); */

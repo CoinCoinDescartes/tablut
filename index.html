@@ -36,6 +36,23 @@
         background-color: cadetblue;
       }
 
+      .pion {
+        height: 40px;
+        width: 40px;
+      }
+
+      .pion.black {
+        background-image: url("./black.png");
+      }
+
+      .pion.white {
+        background-image: url("./white.png");
+      }
+      
+      .pion.white.king {
+        background-image: url("./king.png");
+      }
+
       body {
         background-color: black;
         color: white;
@@ -52,11 +69,13 @@
     </p>
 
     <p>
-      Direct child element(s) of the grid container automatically becomes grid
-      items.
+     It's <b id="player-turn"></b> turn
     </p>
 
-    <div class="grid-container">
+    <div id="game-zone">
+
+    </div>
+    <!-- <div class="grid-container">
       <div class="grid-item"></div>
       <div class="grid-item"></div>
       <div class="grid-item"></div>
@@ -194,8 +213,8 @@
       <div class="grid-item"></div>
       <div class="grid-item"></div>
       <div class="grid-item"></div>
-    </div>
+    </div> -->
   </body>
-  <script src="myscripts.js"></script>
+  <!-- <script src="myscripts.js"></script> -->
   <script type="module" src="main.js"></script>
 </html>
