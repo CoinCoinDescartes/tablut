@@ -1,0 +1,65 @@
+#game-zone {
+  display: grid;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  /* grid-template-columns: repeat(9, minmax(320px, 1fr)); */
+  background-color: #2196f3;
+  /* padding: 10px; */
+  margin: auto;
+  /* width: 450px;
+    height: 450px; */
+}
+
+.grid-item {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  /* width: 45px;
+    height: 45px; */
+  text-align: center;
+
+  color: blue;
+}
+
+.grid-item:nth-child(2n) {
+  background-color: saddlebrown;
+}
+
+.grid-item.validMove {
+  background-color: aqua;
+}
+
+.grid-item.validMove.current {
+  background-color: red;
+}
+
+.grid-item.throne {
+  background-color: cadetblue;
+}
+
+.pion {
+  height: 40px;
+  width: 40px;
+}
+
+.pion.black {
+  background-image: url("./img/black.png");
+}
+
+.pion.white {
+  background-image: url("./img/white.png");
+}
+
+.pion.white.king {
+  background-image: url("./img/king.png");
+}
+
+body {
+  background-color: black;
+  color: white;
+}

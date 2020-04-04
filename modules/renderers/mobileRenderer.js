@@ -1,15 +1,23 @@
-export class OriginalRenderer {
-  constructor(gameZoneElement, playerTurnElement, winnerElement) {
+export class MobileRenderer {
+  constructor(
+    gameZoneElement,
+    playerTurnElement,
+    winnerElement,
+    startMoveSoundElement,
+    endMoveSoundElement
+  ) {
     this.gameZone = gameZoneElement;
     this.playerTurn = playerTurnElement;
     this.winner = winnerElement;
+    this.startMoveSound = startMoveSoundElement;
+    this.endMoveSound = endMoveSoundElement;
   }
 
   generateView(game) {
     let currentDraged = null;
     const generateGrid = game => {
       const createTokenView = (token, playerTurn) => {
-        const drag = ev => {
+        const tokenClick = ev => {
           const clearContent = element => {
             while (element.firstChild) {
               element.removeChild(element.firstChild);
@@ -34,18 +42,10 @@ export class OriginalRenderer {
 
             return game.board.board[x][y];
           };
-          const dragover = ev => {
-            ev.preventDefault();
-            ev.target.classList.add("current");
-          };
-          const dragleave = ev => {
-            ev.preventDefault();
-            ev.target.classList.remove("current");
-          };
-          const drop = ev => {
+          const caseClick = ev => {
             ev.preventDefault();
             removeValidMoveClass();
-            const tokenId = ev.dataTransfer.getData("text");
+            const tokenId = selectedToken;
             const token = game.getTokenDataFromId(tokenId);
             const caseId = ev.target.id;
             const caseData = getSquareFromCaseId(caseId);
@@ -56,6 +56,7 @@ export class OriginalRenderer {
             );
 
             const gameZone = document.getElementById("game-zone");
+            this.endMoveSound.play();
             clearContent(gameZone);
             this.generateView(newGameState);
 
@@ -70,13 +71,14 @@ export class OriginalRenderer {
             elements.forEach(elem => {
               elem.classList.remove("validMove");
               elem.classList.remove("current");
-              elem.removeEventListener("drop", drop);
-              elem.removeEventListener("dragover", dragover);
-              elem.removeEventListener("dragleave", dragleave);
+              elem.removeEventListener("click", caseClick);
             });
           };
+          let selectedToken = null;
+
           // recuperation des données du token
           const tokenData = getTokenDataFromId(ev.target.id);
+          this.startMoveSound.play();
 
           // clear des class
           if (currentDraged !== ev.target) {
@@ -84,21 +86,18 @@ export class OriginalRenderer {
 
             currentDraged = ev.target;
           }
-
           // set des donne a tranferer durant le transfert
-          ev.dataTransfer.setData("text", ev.target.id);
+        //   ev.dataTransfer.setData("text", ev.target.id);
+          selectedToken = ev.target.id;
 
           //recherche des position valide
           const validPos = game.getValidPosToMove(tokenData);
-          // console.log(validPos);
 
           // ajout des class sur les cases possible de destination
           validPos.forEach(elem => {
             const sq = getCaseFromSquare(elem);
             sq.classList.add("validMove");
-            sq.addEventListener("drop", drop);
-            sq.addEventListener("dragover", dragover);
-            sq.addEventListener("dragleave", dragleave);
+            sq.addEventListener("click", caseClick);
           });
         };
         const color = token.color;
@@ -115,8 +114,7 @@ export class OriginalRenderer {
         }
 
         if (playerTurn === color) {
-          tokenView.setAttribute("draggable", "true");
-          tokenView.addEventListener("dragstart", drag);
+          tokenView.addEventListener("click", tokenClick);
         }
 
         return tokenView;
