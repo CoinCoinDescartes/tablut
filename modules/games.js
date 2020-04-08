@@ -7,9 +7,25 @@ export class Game {
     this.board = new Board(this.TAB_SIZE);
     this.whitePlayer = new Player("white", this.board.whiteToken.length);
     this.blackPlayer = new Player("black", this.board.blackToken.length);
-    this.playerTurn = "black";
+    this.playerTurn = this.firstPlayer();
     this.winPlayer = null;
     this.gameState = "running";
+  }
+
+  firstPlayer() {
+    const getRandomIntInclusive = (min, max) => {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    const rand = getRandomIntInclusive(1, 2);
+    if (rand === 1) {
+      return "black";
+    }
+    else {
+      return "white";
+    }
   }
 
   changePlayer() {
