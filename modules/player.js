@@ -1,7 +1,15 @@
 export class Player {
-    constructor(name, numberOfToken) {
+    constructor(name) {
       this.name = name;
-      this.numberOfToken = numberOfToken;
+    }
+
+    setNumberOfToken(tokenNumber) {
+      this.numberOfToken = tokenNumber;
+    }
+
+    play() {
+      console.log("waiting human player move");
+      
     }
   }
   

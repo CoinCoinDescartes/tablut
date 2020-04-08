@@ -1,25 +1,28 @@
 import { Board } from "./board.js";
-import { Player } from "./player.js";
+// import { Player } from "./player.js";
+import { Utils } from "./utils.js"
 
 export class Game {
-  constructor() {
+  constructor(whitePlayer, blackPlayer) {
     this.TAB_SIZE = 9;
     this.board = new Board(this.TAB_SIZE);
-    this.whitePlayer = new Player("white", this.board.whiteToken.length);
-    this.blackPlayer = new Player("black", this.board.blackToken.length);
+    // this.whitePlayer = new Player("white", this.board.whiteToken.length);
+    // this.blackPlayer = new Player("black", this.board.blackToken.length);
+    this.whitePlayer = whitePlayer;
+    this.whitePlayer.setNumberOfToken(this.board.whiteToken.length);
+    this.blackPlayer = blackPlayer;
+    this.blackPlayer.setNumberOfToken(this.board.blackToken.length);
     this.playerTurn = this.firstPlayer();
+    console.log("firstPlayer", this.playerTurn);
+
     this.winPlayer = null;
     this.gameState = "running";
+
+    this.observer = [];
   }
 
   firstPlayer() {
-    const getRandomIntInclusive = (min, max) => {
-      min = Math.ceil(min);
-      max = Math.floor(max);
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    const rand = getRandomIntInclusive(1, 2);
+    const rand = Utils.getRandomIntInclusive(1, 2)
     if (rand === 1) {
       return "black";
     }
@@ -85,8 +88,10 @@ export class Game {
     return validPos;
   }
 
-  gameMove(token, finalPos, player) {
-    if (player.name === this.playerTurn) {
+  gameMove(token, finalPos) {
+    console.log('gameMove', token.color, this.playerTurn);
+
+    if (token.color === this.playerTurn) {
       this.board.moveToken(token, finalPos);
       const capturedTokens = this.listCapturedTokensFromMovedToken(token);
       capturedTokens.forEach(tok => {
@@ -101,7 +106,9 @@ export class Game {
       this.computerGameEnd();
       this.changePlayer();
 
-      console.log(this);
+      // console.log(this);
+
+      this.observer.forEach(obs => obs.update(this));
 
       return this;
     }
@@ -153,13 +160,13 @@ export class Game {
   listCapturedTokensFromMovedToken(token) {
     const capturedTokens = [];
     const aroundSquares = this.board.getSquareAround(token);
-    console.log(aroundSquares);
+    // console.log(aroundSquares);
 
     for (const aroundSquare in aroundSquares) {
       const sq = aroundSquares[aroundSquare];
       if (sq) {
         const tok = sq.content;
-        console.log(tok);
+        // console.log(tok);
 
         if (tok) {
           let otherToken;
@@ -201,5 +208,12 @@ export class Game {
 
   getTokenDataFromId(id) {
     return this.board.getTokenDataFromId(id);
+  }
+
+  getListTokenOfPlayer(player) {
+    if (player.name === "white") {
+      return this.board.whiteToken;
+    }
+    return this.board.blackToken;
   }
 }

@@ -1,5 +1,7 @@
-export class MobileRenderer {
-  constructor(
+import { Renderer } from "./renderer.js";
+
+export class MobileRenderer extends Renderer {
+  /* constructor(
     gameZoneElement,
     playerTurnElement,
     winnerElement,
@@ -11,7 +13,7 @@ export class MobileRenderer {
     this.winner = winnerElement;
     this.startMoveSound = startMoveSoundElement;
     this.endMoveSound = endMoveSoundElement;
-  }
+  } */
 
   generateView(game) {
     let currentDraged = null;
@@ -87,7 +89,7 @@ export class MobileRenderer {
             currentDraged = ev.target;
           }
           // set des donne a tranferer durant le transfert
-        //   ev.dataTransfer.setData("text", ev.target.id);
+          //   ev.dataTransfer.setData("text", ev.target.id);
           selectedToken = ev.target.id;
 
           //recherche des position valide
@@ -162,5 +164,9 @@ export class MobileRenderer {
 
     updateInfo(game);
     generateGrid(game);
+  }
+
+  update(game) {
+    console.log('MobileRenderer update', game);
   }
 }

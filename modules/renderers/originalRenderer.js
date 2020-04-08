@@ -1,22 +1,19 @@
-export class OriginalRenderer {
-  constructor(gameZoneElement, playerTurnElement, winnerElement, startMoveSoundElement, endMoveSoundElement) {
+import { Renderer } from "./renderer.js";
+
+export class OriginalRenderer extends Renderer {
+  /* constructor(gameZoneElement, playerTurnElement, winnerElement, startMoveSoundElement, endMoveSoundElement) {
     this.gameZone = gameZoneElement;
     this.playerTurn = playerTurnElement;
     this.winner = winnerElement;
     this.startMoveSound = startMoveSoundElement;
     this.endMoveSound = endMoveSoundElement;
-  }
+  } */
 
   generateView(game) {
     let currentDraged = null;
     const generateGrid = game => {
       const createTokenView = (token, playerTurn) => {
         const drag = ev => {
-          const clearContent = element => {
-            while (element.firstChild) {
-              element.removeChild(element.firstChild);
-            }
-          };
           const getTokenDataFromId = id => {
             return game.getTokenDataFromId(id);
           };
@@ -51,18 +48,21 @@ export class OriginalRenderer {
             const token = game.getTokenDataFromId(tokenId);
             const caseId = ev.target.id;
             const caseData = getSquareFromCaseId(caseId);
+            console.log('drop', caseData);
+            
             const newGameState = game.gameMove(
               token,
               { x: caseData.x, y: caseData.y },
-              game.getPlayerByName(game.playerTurn)
+              game.getPlayerByName(token.color)
             );
 
-            const gameZone = document.getElementById("game-zone");
-            this.endMoveSound.play();
-            clearContent(gameZone);
-            this.generateView(newGameState);
 
-            console.log(game.board.board);
+            console.log('newGameState', newGameState);
+            this.endMoveSound.play();
+            // this.update(newGameState);
+
+
+            // console.log(game.board.board);
 
             // ev.target.appendChild(document.getElementById(tokenId));
           };
@@ -153,19 +153,34 @@ export class OriginalRenderer {
       const gameZone = document.getElementById("game-zone");
       gameZone.appendChild(gridContainer);
     };
-    const updateInfo = game => {
-      document.getElementById(
-        "player-turn"
-      ).innerHTML = `It's ${game.playerTurn} player turn`;
-      if (game.gameState === "end") {
-        document.getElementById(
-          "winner"
-        ).innerHTML = `Winner ${game.winPlayer.name}`;
-        document.getElementById("player-turn").innerHTML = "";
-      }
-    };
 
-    updateInfo(game);
+    this.updateInfo(game);
     generateGrid(game);
   }
+
+  update(game) {
+    const clearContent = element => {
+      while (element.firstChild) {
+        element.removeChild(element.firstChild);
+      }
+    };
+    console.log('OriginalRenderer update', game);
+    const gameZone = document.getElementById("game-zone");
+    clearContent(gameZone);
+
+    this.updateInfo(game);
+    this.generateView(game);
+  }
+
+  updateInfo(game) {
+    document.getElementById(
+      "player-turn"
+    ).innerHTML = `It's ${game.playerTurn} player turn`;
+    if (game.gameState === "end") {
+      document.getElementById(
+        "winner"
+      ).innerHTML = `Winner ${game.winPlayer.name}`;
+      document.getElementById("player-turn").innerHTML = "";
+    }
+  };
 }
