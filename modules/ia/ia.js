@@ -11,8 +11,10 @@ export class IA extends Player {
 
     setGame(game) {
         this.game = game;
+        console.log(this.name);
+        
         this.myself = this.game.getPlayerByName(this.name);
-        this.listToken = this.game.getListTokenOfPlayer(this.name);
+        this.listToken = this.game.getListTokenOfPlayer(this);
         // this.play();
     }
 
