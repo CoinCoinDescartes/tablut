@@ -57,12 +57,13 @@ export class MobileRenderer extends Renderer {
               game.getPlayerByName(game.playerTurn)
             );
 
-            const gameZone = document.getElementById("game-zone");
             this.endMoveSound.play();
-            clearContent(gameZone);
-            this.generateView(newGameState);
 
-            console.log(game.board.board);
+            // const gameZone = document.getElementById("game-zone");
+            // clearContent(gameZone);
+            // this.generateView(newGameState);
+
+            // console.log(game.board.board);
 
             // ev.target.appendChild(document.getElementById(tokenId));
           };
@@ -150,23 +151,35 @@ export class MobileRenderer extends Renderer {
       const gameZone = document.getElementById("game-zone");
       gameZone.appendChild(gridContainer);
     };
-    const updateInfo = game => {
-      document.getElementById(
-        "player-turn"
-      ).innerHTML = `It's ${game.playerTurn} player turn`;
-      if (game.gameState === "end") {
-        document.getElementById(
-          "winner"
-        ).innerHTML = `Winner ${game.winPlayer.name}`;
-        document.getElementById("player-turn").innerHTML = "";
-      }
-    };
 
-    updateInfo(game);
+
+    this.updateInfo(game);
     generateGrid(game);
   }
 
+  updateInfo(game) {
+    document.getElementById(
+      "player-turn"
+    ).innerHTML = `It's ${game.playerTurn} player turn`;
+    if (game.gameState === "end") {
+      document.getElementById(
+        "winner"
+      ).innerHTML = `Winner ${game.winPlayer.name}`;
+      document.getElementById("player-turn").innerHTML = "";
+    }
+  }
+
   update(game) {
+    const clearContent = element => {
+      while (element.firstChild) {
+        element.removeChild(element.firstChild);
+      }
+    };
     console.log('MobileRenderer update', game);
+    const gameZone = document.getElementById("game-zone");
+    clearContent(gameZone);
+
+    this.updateInfo(game);
+    this.generateView(game);
   }
 }
