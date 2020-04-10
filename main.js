@@ -1,5 +1,5 @@
 import { Game } from "./modules/games.js";
-import { Utils } from "./modules/Utils.js";
+import { Utils } from "./modules/utils.js";
 import { OriginalRenderer } from "./modules/renderers/originalRenderer.js";
 // import { MobileRenderer } from "./modules/renderers/mobileRenderer.js";
 import { Player } from "./modules/player.js";
