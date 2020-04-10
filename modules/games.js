@@ -6,8 +6,6 @@ export class Game {
   constructor(whitePlayer, blackPlayer) {
     this.TAB_SIZE = 9;
     this.board = new Board(this.TAB_SIZE);
-    // this.whitePlayer = new Player("white", this.board.whiteToken.length);
-    // this.blackPlayer = new Player("black", this.board.blackToken.length);
     this.whitePlayer = whitePlayer;
     this.whitePlayer.setNumberOfToken(this.board.whiteToken.length);
     this.blackPlayer = blackPlayer;
@@ -49,6 +47,9 @@ export class Game {
     return this.whitePlayer;
   }
 
+  /* 
+    Rules
+  */
   getValidPosToMove(token) {
     const getBeforeToken = (array, value) => {
       let before = [];
@@ -88,6 +89,9 @@ export class Game {
     return validPos;
   }
 
+  /* 
+    Rules
+  */
   gameMove(token, finalPos) {
     console.log('gameMove', token.color, this.playerTurn);
 
@@ -120,11 +124,17 @@ export class Game {
     player.numberOfToken--;
   }
 
+  /* 
+    Rules
+  */
   endGame(winner) {
     this.gameState = "end";
     this.winPlayer = winner;
   }
 
+  /* 
+    Rules
+  */
   computerGameEnd() {
     const edges = this.board.getEdge();
 
@@ -157,6 +167,9 @@ export class Game {
     }
   }
 
+  /* 
+    Rules
+  */
   listCapturedTokensFromMovedToken(token) {
     const capturedTokens = [];
     const aroundSquares = this.board.getSquareAround(token);
