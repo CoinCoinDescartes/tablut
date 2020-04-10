@@ -2,7 +2,7 @@ import { Renderer } from "./renderer.js";
 
 export class MobileRenderer extends Renderer {
   generateView(game) {
-    let currentDraged = null;
+    let currentTokenClicked = null;
     const generateGrid = game => {
       const createTokenView = (token, playerTurn) => {
         const tokenClick = ev => {
@@ -37,7 +37,8 @@ export class MobileRenderer extends Renderer {
               { x: caseData.x, y: caseData.y },
               game.getPlayerByName(game.playerTurn)
             );
-
+            console.log('newGameState', newGameState);
+            
             this.endMoveSound.play();
           };
           const removeValidMoveClass = () => {
@@ -50,6 +51,22 @@ export class MobileRenderer extends Renderer {
               elem.removeEventListener("click", caseClick);
             });
           };
+          const clearCurrentTokenClicked = () => {
+            if(currentTokenClicked) {
+              const tokenData = getTokenDataFromId(currentTokenClicked.id);
+              const validPos = game.getValidPosToMove(tokenData);
+
+              // ajout des class sur les cases possible de destination
+              validPos.forEach(elem => {
+                const sq = getCaseFromSquare(elem);
+                sq.classList.add("validMove");
+                sq.removeEventListener("click", caseClick);
+              });
+
+              currentTokenClicked = null;
+            }
+            
+          };
           let selectedToken = null;
 
           // recuperation des données du token
@@ -57,22 +74,23 @@ export class MobileRenderer extends Renderer {
           this.startMoveSound.play();
 
           // clear des class
-          if (currentDraged !== ev.target) {
+          if (currentTokenClicked !== ev.target) {
+            clearCurrentTokenClicked();
             removeValidMoveClass();
 
-            currentDraged = ev.target;
+            currentTokenClicked = ev.target;
+            selectedToken = ev.target.id;
+  
+            //recherche des position valide
+            const validPos = game.getValidPosToMove(tokenData);
+  
+            // ajout des class sur les cases possible de destination
+            validPos.forEach(elem => {
+              const sq = getCaseFromSquare(elem);
+              sq.classList.add("validMove");
+              sq.addEventListener("click", caseClick);
+            });
           }
-          selectedToken = ev.target.id;
-
-          //recherche des position valide
-          const validPos = game.getValidPosToMove(tokenData);
-
-          // ajout des class sur les cases possible de destination
-          validPos.forEach(elem => {
-            const sq = getCaseFromSquare(elem);
-            sq.classList.add("validMove");
-            sq.addEventListener("click", caseClick);
-          });
         };
         const color = token.color;
         const isKing = token.isKing;

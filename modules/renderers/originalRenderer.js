@@ -51,12 +51,6 @@ export class OriginalRenderer extends Renderer {
 
             console.log('newGameState', newGameState);
             this.endMoveSound.play();
-            // this.update(newGameState);
-
-
-            // console.log(game.board.board);
-
-            // ev.target.appendChild(document.getElementById(tokenId));
           };
           const removeValidMoveClass = () => {
             const elements = [
@@ -70,38 +64,53 @@ export class OriginalRenderer extends Renderer {
               elem.removeEventListener("dragleave", dragleave);
             });
           };
+          const clearCurrentDragged = () => {
+            if (currentDraged) {
+              const tokenData = getTokenDataFromId(currentDraged.id);
+              const validPos = game.getValidPosToMove(tokenData);
+
+              // ajout des class sur les cases possible de destination
+              validPos.forEach(elem => {
+                const sq = getCaseFromSquare(elem);
+                sq.classList.add("validMove");
+                sq.removeEventListener("drop", drop);
+                sq.removeEventListener("dragover", dragover);
+                sq.removeEventListener("dragleave", dragleave);
+              });
+              currentDraged = null;
+            }
+          };
           // recuperation des données du token
           const tokenData = getTokenDataFromId(ev.target.id);
           this.startMoveSound.play();
 
+          ev.dataTransfer.setData("text", ev.target.id);
           // clear des class
           if (currentDraged !== ev.target) {
+            clearCurrentDragged();
             removeValidMoveClass();
 
             currentDraged = ev.target;
+            // set des donne a tranferer durant le transfert
+
+            //recherche des position valide
+            const validPos = game.getValidPosToMove(tokenData);
+
+            // ajout des class sur les cases possible de destination
+            validPos.forEach(elem => {
+              const sq = getCaseFromSquare(elem);
+              sq.classList.add("validMove");
+              sq.addEventListener("drop", drop);
+              sq.addEventListener("dragover", dragover);
+              sq.addEventListener("dragleave", dragleave);
+            });
           }
-          // set des donne a tranferer durant le transfert
-          ev.dataTransfer.setData("text", ev.target.id);
-
-          //recherche des position valide
-          const validPos = game.getValidPosToMove(tokenData);
-          // console.log(validPos);
-
-          // ajout des class sur les cases possible de destination
-          validPos.forEach(elem => {
-            const sq = getCaseFromSquare(elem);
-            sq.classList.add("validMove");
-            sq.addEventListener("drop", drop);
-            sq.addEventListener("dragover", dragover);
-            sq.addEventListener("dragleave", dragleave);
-          });
         };
         const color = token.color;
         const isKing = token.isKing;
         const id = token.id;
 
         const tokenView = document.createElement("div");
-        // tokenView.innerHTML = id;
         tokenView.classList.add("pion");
         tokenView.classList.add(color);
         tokenView.setAttribute("id", id);
