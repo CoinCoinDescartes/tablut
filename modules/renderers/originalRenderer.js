@@ -1,14 +1,6 @@
 import { Renderer } from "./renderer.js";
 
 export class OriginalRenderer extends Renderer {
-  /* constructor(gameZoneElement, playerTurnElement, winnerElement, startMoveSoundElement, endMoveSoundElement) {
-    this.gameZone = gameZoneElement;
-    this.playerTurn = playerTurnElement;
-    this.winner = winnerElement;
-    this.startMoveSound = startMoveSoundElement;
-    this.endMoveSound = endMoveSoundElement;
-  } */
-
   generateView(game) {
     let currentDraged = null;
     const generateGrid = game => {
@@ -49,7 +41,7 @@ export class OriginalRenderer extends Renderer {
             const caseId = ev.target.id;
             const caseData = getSquareFromCaseId(caseId);
             console.log('drop', caseData);
-            
+
             const newGameState = game.gameMove(
               token,
               { x: caseData.x, y: caseData.y },
@@ -126,7 +118,7 @@ export class OriginalRenderer extends Renderer {
       };
 
       const gridContainer = document.createElement("div");
-      gridContainer.classList.add("grid-container");
+      gridContainer.classList.add("originalRenderer", "grid-container");
 
       let index = 0;
       for (const line of game.board.board) {

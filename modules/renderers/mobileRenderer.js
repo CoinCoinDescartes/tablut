@@ -1,30 +1,11 @@
 import { Renderer } from "./renderer.js";
 
 export class MobileRenderer extends Renderer {
-  /* constructor(
-    gameZoneElement,
-    playerTurnElement,
-    winnerElement,
-    startMoveSoundElement,
-    endMoveSoundElement
-  ) {
-    this.gameZone = gameZoneElement;
-    this.playerTurn = playerTurnElement;
-    this.winner = winnerElement;
-    this.startMoveSound = startMoveSoundElement;
-    this.endMoveSound = endMoveSoundElement;
-  } */
-
   generateView(game) {
     let currentDraged = null;
     const generateGrid = game => {
       const createTokenView = (token, playerTurn) => {
         const tokenClick = ev => {
-          const clearContent = element => {
-            while (element.firstChild) {
-              element.removeChild(element.firstChild);
-            }
-          };
           const getTokenDataFromId = id => {
             return game.getTokenDataFromId(id);
           };
@@ -58,14 +39,6 @@ export class MobileRenderer extends Renderer {
             );
 
             this.endMoveSound.play();
-
-            // const gameZone = document.getElementById("game-zone");
-            // clearContent(gameZone);
-            // this.generateView(newGameState);
-
-            // console.log(game.board.board);
-
-            // ev.target.appendChild(document.getElementById(tokenId));
           };
           const removeValidMoveClass = () => {
             const elements = [
@@ -89,8 +62,6 @@ export class MobileRenderer extends Renderer {
 
             currentDraged = ev.target;
           }
-          // set des donne a tranferer durant le transfert
-          //   ev.dataTransfer.setData("text", ev.target.id);
           selectedToken = ev.target.id;
 
           //recherche des position valide
@@ -108,7 +79,6 @@ export class MobileRenderer extends Renderer {
         const id = token.id;
 
         const tokenView = document.createElement("div");
-        // tokenView.innerHTML = id;
         tokenView.classList.add("pion");
         tokenView.classList.add(color);
         tokenView.setAttribute("id", id);
@@ -124,7 +94,7 @@ export class MobileRenderer extends Renderer {
       };
 
       const gridContainer = document.createElement("div");
-      gridContainer.classList.add("grid-container");
+      gridContainer.classList.add("mobileRenderer","grid-container");
 
       let index = 0;
       for (const line of game.board.board) {
