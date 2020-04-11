@@ -1,9 +1,17 @@
 <!DOCTYPE html>
-<meta charset="UTF-8" />
-<html>
+<html lang="en">
 
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="title" content="Tablut versus IA">
+  <meta name="description" content="Play Tablut versus IA.">
+  <meta name="keywords" content="game, tablut, ia">
+  <meta name="language" content="English">
+
+  <title>Tablut versus IA</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.webmanifest">
 </head>
 
 <body>
@@ -53,6 +61,14 @@
     The defenders win when they can move their king to any edge of the board.
     The attackers win when they capture the king, or if the can prevent all defenders from moving.
   </p>
+
+
+  <div id="update-alert" style="display: none;">
+    A new version is available. Click on the button to get it.
+    <p class="text-right">
+      <button id="reload-btn" class="btn btn-info">Update</button>
+    </p>
+  </div>
 </body>
 <script type="module" src="main.js"></script>
 
